@@ -138,9 +138,11 @@ export function MtoOrderDetailsPage() {
               <h2 className="mb-4 text-lg font-semibold text-slate-800">Product Details</h2>
               <div className="space-y-3">
                 {order.items.map((item) => (
-                  <div
+                  <button
                     key={item.id}
-                    className="flex flex-wrap items-start justify-between gap-4 rounded-xl border border-slate-100 bg-slate-50 p-4"
+                    type="button"
+                    onClick={() => navigate(`/mto/orders/${order.id}/items/${item.id}`)}
+                    className="flex w-full flex-wrap items-start justify-between gap-4 rounded-xl border border-slate-100 bg-slate-50 p-4 text-left transition hover:border-slate-300 hover:bg-white"
                   >
                     <div className="flex gap-3">
                       {item.images[0] ? (
@@ -161,22 +163,22 @@ export function MtoOrderDetailsPage() {
                             MTO
                           </span>
                           {item.karat && (
-                            <span className="rounded-full bg-white px-2.5 py-0.5 text-xs font-medium text-slate-700 border border-slate-200">
+                            <span className="rounded-full border border-slate-200 bg-white px-2.5 py-0.5 text-xs font-medium text-slate-700">
                               {item.karat}
                             </span>
                           )}
                           {item.baseMetal && (
-                            <span className="rounded-full bg-white px-2.5 py-0.5 text-xs font-medium text-slate-700 border border-slate-200">
+                            <span className="rounded-full border border-slate-200 bg-white px-2.5 py-0.5 text-xs font-medium text-slate-700">
                               {item.baseMetal}
                             </span>
                           )}
                           {(item.requestedSize || item.size) && (
-                            <span className="rounded-full bg-white px-2.5 py-0.5 text-xs font-medium text-slate-700 border border-slate-200">
+                            <span className="rounded-full border border-slate-200 bg-white px-2.5 py-0.5 text-xs font-medium text-slate-700">
                               Size {item.requestedSize || item.size}
                             </span>
                           )}
                           {(item.requestedColour || item.colour) && (
-                            <span className="rounded-full bg-white px-2.5 py-0.5 text-xs font-medium text-slate-700 border border-slate-200">
+                            <span className="rounded-full border border-slate-200 bg-white px-2.5 py-0.5 text-xs font-medium text-slate-700">
                               {item.requestedColour || item.colour}
                             </span>
                           )}
@@ -189,6 +191,9 @@ export function MtoOrderDetailsPage() {
                         {item.buyingRemark && (
                           <p className="mt-2 text-sm text-slate-500">{item.buyingRemark}</p>
                         )}
+                        <p className="mt-2 text-xs font-medium text-slate-600">
+                          View full details →
+                        </p>
                       </div>
                     </div>
                     <div className="text-right">
@@ -212,7 +217,7 @@ export function MtoOrderDetailsPage() {
                         <p className="mt-1 text-xs text-emerald-700">Paid in full</p>
                       )}
                     </div>
-                  </div>
+                  </button>
                 ))}
               </div>
             </section>

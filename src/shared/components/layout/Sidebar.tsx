@@ -9,15 +9,19 @@ import {
   FileText,
   Menu,
   Hammer,
+  Building2,
+  Gem,
 } from 'lucide-react'
 
 const navItems = [
   { to: '/', icon: Home, label: 'Home', end: true },
-  { to: '/orders', icon: ShoppingCart, label: 'Orders' },
   { to: '/products', icon: Package, label: 'Products' },
+  { to: '/orders', icon: ShoppingCart, label: 'Orders' },
   { to: '/customers', icon: Users, label: 'Customers' },
   { to: '/inventory', icon: Warehouse, label: 'Inventory' },
+  { to: '/warehouse', icon: Building2, label: 'Warehouse' },
   { to: '/mto', icon: Hammer, label: 'MTO' },
+  { to: '/pop', icon: Gem, label: 'POP' },
   { to: '/finance', icon: DollarSign, label: 'Finance' },
   { to: '/reports', icon: FileText, label: 'Reports' },
 ]

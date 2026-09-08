@@ -1,5 +1,5 @@
-import { useRef } from 'react'
-import { ChevronDown, ImagePlus, Package, Plus, Trash2 } from 'lucide-react'
+import { useRef, useState } from 'react'
+import { Camera, ChevronDown, ImagePlus, Package, Plus, Trash2, Upload } from 'lucide-react'
 import type { MtoItem, MtoItemImage } from '@/features/mto/types'
 import {
   itemLineTotal,
@@ -81,16 +81,19 @@ export function OrderItemCard({
   onRemove: () => void
 }) {
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const cameraInputRef = useRef<HTMLInputElement>(null)
+  const [showImagePicker, setShowImagePicker] = useState(false)
 
   const addImages = (files: FileList | null) => {
     if (!files?.length) return
     const next: MtoItemImage[] = Array.from(files).map((file) => ({
       id: `img-${Math.random().toString(36).slice(2, 9)}`,
-      name: file.name,
+      name: file.name || `Photo ${Date.now()}`,
       url: URL.createObjectURL(file),
       source: 'upload' as const,
     }))
     onChange({ images: [...item.images, ...next] })
+    setShowImagePicker(false)
   }
 
   return (
@@ -145,9 +148,17 @@ export function OrderItemCard({
             </>
           ) : (
             <>
-              <p className="mb-3 text-sm text-slate-500">
-                Images for this product only — linked to the specifications below.
-              </p>
+              <input
+                ref={cameraInputRef}
+                type="file"
+                accept="image/*"
+                capture="environment"
+                className="hidden"
+                onChange={(e) => {
+                  addImages(e.target.files)
+                  e.target.value = ''
+                }}
+              />
               <input
                 ref={fileInputRef}
                 type="file"
@@ -159,15 +170,63 @@ export function OrderItemCard({
                   e.target.value = ''
                 }}
               />
-              <button
-                type="button"
-                onClick={() => fileInputRef.current?.click()}
-                className="flex w-full flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-8 text-center hover:bg-slate-100"
-              >
-                <ImagePlus className="mb-2 size-6 text-slate-500" />
-                <p className="text-sm font-medium text-slate-700">Add product images</p>
-                <p className="mt-1 text-xs text-slate-500">PNG, JPG · multiple angles</p>
-              </button>
+
+              {!showImagePicker ? (
+                <button
+                  type="button"
+                  onClick={() => setShowImagePicker(true)}
+                  className="flex w-full flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-8 text-center hover:bg-slate-100"
+                >
+                  <ImagePlus className="mb-2 size-6 text-slate-500" />
+                  <p className="text-sm font-medium text-slate-700">Add product images</p>
+                  <p className="mt-1 text-xs text-slate-500">
+                    Camera or upload · PNG, JPG
+                  </p>
+                </button>
+              ) : (
+                <div className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
+                  <div className="border-b border-slate-200 bg-amber-50 px-4 py-3">
+                    <p className="text-sm font-medium text-amber-900">
+                      Upload clear images from as many angles as possible
+                    </p>
+                    <p className="mt-1 text-xs leading-relaxed text-amber-800/90">
+                      Front, side, top, and close-up shots help the design team understand the product
+                      better. Prefer good lighting and sharp focus.
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-3 p-4 sm:grid-cols-2">
+                    <button
+                      type="button"
+                      onClick={() => cameraInputRef.current?.click()}
+                      className="flex flex-col items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-6 text-center hover:border-slate-400 hover:bg-slate-50"
+                    >
+                      <Camera className="size-7 text-slate-700" />
+                      <span className="text-sm font-semibold text-slate-800">Open camera</span>
+                      <span className="text-xs text-slate-500">Capture a new photo</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="flex flex-col items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-6 text-center hover:border-slate-400 hover:bg-slate-50"
+                    >
+                      <Upload className="size-7 text-slate-700" />
+                      <span className="text-sm font-semibold text-slate-800">Upload images</span>
+                      <span className="text-xs text-slate-500">Choose from gallery / files</span>
+                    </button>
+                  </div>
+
+                  <div className="border-t border-slate-200 px-4 py-3 text-right">
+                    <button
+                      type="button"
+                      onClick={() => setShowImagePicker(false)}
+                      className="h-8 rounded-lg px-3 text-sm font-medium text-slate-600 hover:bg-slate-100"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {item.images.length > 0 && (
                 <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">

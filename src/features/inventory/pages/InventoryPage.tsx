@@ -1,5 +1,5 @@
 import { useMemo, useState, type ReactNode } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import {
   Search,
   Filter,
@@ -10,16 +10,18 @@ import {
   Clock,
   Plus,
   ChevronDown,
+  RefreshCw,
 } from 'lucide-react'
 import { AppLayout } from '@/shared/components/layout'
 import { inventoryItems } from '@/features/inventory/data/inventoryData'
 import { formatCurrency } from '@/shared/lib/currency'
+import { AdvicesTab } from '@/features/inventory/components/AdvicesTab'
 import type { InventoryStatus, InventoryTab } from '@/features/inventory/types'
 
 const TABS: { id: InventoryTab; label: string }[] = [
   { id: 'stock', label: 'Stock Overview' },
-  { id: 'inward', label: 'Inward History' },
-  { id: 'outward', label: 'Outward History' },
+  { id: 'inward', label: 'Inward' },
+  { id: 'outward', label: 'Outward' },
   { id: 'advices', label: 'Advices' },
 ]
 
@@ -43,9 +45,22 @@ function statusBadgeClass(status: InventoryStatus) {
 
 export function InventoryPage() {
   const navigate = useNavigate()
-  const [activeTab, setActiveTab] = useState<InventoryTab>('stock')
+  const [searchParams, setSearchParams] = useSearchParams()
+  const tabParam = searchParams.get('tab')
+  const activeTab: InventoryTab =
+    tabParam === 'inward' || tabParam === 'outward' || tabParam === 'advices' || tabParam === 'stock'
+      ? tabParam
+      : 'stock'
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState<'All Status' | InventoryStatus>('All Status')
+
+  const setActiveTab = (tab: InventoryTab) => {
+    if (tab === 'stock') {
+      setSearchParams({})
+    } else {
+      setSearchParams({ tab })
+    }
+  }
 
   const filteredItems = useMemo(() => {
     return inventoryItems.filter((item) => {
@@ -73,6 +88,13 @@ export function InventoryPage() {
             <div className="flex items-center gap-3">
               <button
                 type="button"
+                className="flex h-9 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 hover:bg-slate-50"
+              >
+                <RefreshCw className="size-4" />
+                Refresh
+              </button>
+              <button
+                type="button"
                 onClick={() => navigate('/inventory/history')}
                 className="flex h-9 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 hover:bg-slate-50"
               >
@@ -92,6 +114,12 @@ export function InventoryPage() {
               >
                 <Calendar className="size-4" />
                 Date Range
+              </button>
+              <button
+                type="button"
+                className="flex h-9 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 hover:bg-slate-50"
+              >
+                Export
               </button>
             </div>
           </div>
@@ -261,6 +289,8 @@ export function InventoryPage() {
                 </table>
               </div>
             </>
+          ) : activeTab === 'advices' ? (
+            <AdvicesTab />
           ) : (
             <div className="flex flex-1 items-center justify-center rounded-xl border border-dashed border-slate-200 bg-white">
               <div className="text-center">

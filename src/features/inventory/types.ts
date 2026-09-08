@@ -14,6 +14,43 @@ export interface InventoryItem {
 
 export type InventoryTab = 'stock' | 'inward' | 'outward' | 'advices'
 
+export type AdviceType = 'Store Transfer Out' | 'Back to Warehouse'
+
+export type AdviceStatus = 'INWARDED' | 'DISPATCHED' | 'PARTIALLY_INWARDED' | 'FAILED' | 'VOIDED'
+
+export type AdviceUnitStatus =
+  | 'inwarded'
+  | 'damaged'
+  | 'missing_barcode'
+  | 'missing'
+  | 'pending'
+
+export interface AdviceUnitCounts {
+  inwarded: number
+  damaged: number
+  missingBarcode: number
+  missing: number
+  pending: number
+}
+
+export interface Advice {
+  id: string
+  type: AdviceType
+  source: string
+  destination: string
+  totalQty: number | null
+  unitStatus: AdviceUnitCounts
+  status: AdviceStatus
+  createdBy: string
+  updatedAt: string
+  updatedAtIso: string
+  pieces?: Array<{ barcode: string; sku: string; name: string }>
+  fileName?: string
+  remark?: string
+  increffSubOrderId?: string
+  invoiceNo?: string
+}
+
 export type ProductHistoryEventType =
   | 'inward'
   | 'returned_warehouse'

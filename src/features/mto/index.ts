@@ -1,5 +1,6 @@
 export { MtoPage } from './pages/MtoPage'
 export { MtoOrdersPage } from './pages/MtoOrdersPage'
 export { MtoOrderDetailsPage } from './pages/MtoOrderDetailsPage'
+export { MtoItemDetailsPage } from './pages/MtoItemDetailsPage'
 export { MtoProvider, useMto } from './context/MtoContext'
 export type * from './types'
