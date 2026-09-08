@@ -363,6 +363,7 @@ export function getPopDashboardSnapshot(
           address: '—',
           customerSince: first.enrollmentDate,
           kycStatus: 'Pending',
+          onboardedBy: '—',
         }
       return {
         profile,
